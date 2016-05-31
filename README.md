@@ -24,12 +24,13 @@ and can be grounded into a record with
 (defrecord-from-base MyRecord MyBase [])
 ```
 
-Like protocols, composition of bases happens in records. It is thus possible to ground multiple bases into the same record by specifying a record of bases rather than a single base.
+Like protocols, composition of bases happens in records. It is thus possible to ground multiple bases into the same record by specifying a vector of bases rather than a single base.
 ```clojure
 (defrecord-from-base MyRecord [MyBase1 MyBase2] [])
 ```
 
 Bases define record fields as well as protocol methods and these definitions can be partial (some fields or methods can be left off and be defined in other bases or in the final record). Bases are merged from left to right, like maps with `clojure.core/merge`, starting from the first base in the definition up to the fields and methods defined in the record. It is thus possible, to override fields and methods defined in bases in the record definition itself. Both methods and fields support type hints. Fields are identified by their symbol across bases. Interfaces are supported and type hints can be overriden (don't ask me why, I'm too crazy to know).
+
 ```clojure
 (definterface MyInterface
   (^int my-method []))
