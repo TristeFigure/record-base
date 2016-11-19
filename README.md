@@ -39,18 +39,18 @@ Bases define record fields as well as protocol methods and these definitions can
   (^int my-method [this]
     123))
 
- (derecord MyRecord MyBase [^int field]
-   (^int my-method [this]
-     456))
+(derecord MyRecord MyBase [^int field]
+  (^int my-method [this]
+    456))
 
- (my-method (->MyRecord)) ;; ==> 456
+(my-method (->MyRecord)) ;; ==> 456
+```
 
 ## Bonus
 
 It also possible to write bases for types via
 - `deftype-from-base`
 - and `extend-type-from-base`
-```
 
 ## TODO
 
