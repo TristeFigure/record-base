@@ -1,6 +1,5 @@
 (ns record-base.core
-  (:require [record-base.utils :as u]
-            [shuriken.core :refer [fully-qualify]]
+  (:require [shuriken.core :refer [fully-qualify without-meta deep-merge]]
             [clojure.set :as set]))
 
 (def ^:private parse-impls
@@ -72,7 +71,7 @@
 
 (defn- parse-fields [fields]
   (->> fields
-       (map (juxt #(u/without-meta %)
+       (map (juxt #(without-meta %)
                   #(let [m (meta %)]
                      (or m {}))))
        (into {})))
@@ -118,7 +117,7 @@
     a
     (let [fields (->> [a b]
                       (map base-fields)
-                      (apply u/deep-merge))
+                      (apply deep-merge))
           impls (->> [a b]
                      (map (comp set keys base-impls))
                      (apply set/union)
