@@ -1,5 +1,9 @@
 # record-base
 
+```clojure
+[record-base "0.1.0"]
+```
+
 A Clojure library that brings traits support for types and records.
 
 In this library a trait is called a *base* (sorry) and aims to complement Clojure's approach of objects by following the same philosophy protocols stick to : a record is still free of any inheritance chain and merely satisfies protocols or *grounds* bases. While protocols decouple interfaces from implementations, bases decouple implementations from interfaces – in the middle, records stand as receptacles for compositions of interfaces on the one hand and for compositions of implementations on the other hand.
@@ -7,6 +11,8 @@ In this library a trait is called a *base* (sorry) and aims to complement Clojur
 A base can be defined with
 
 ```clojure
+(require '[record-base.core :refer :all])
+
 (defbase MyBase [field-1 #^String field-2]
   MyProtocol
   (my-method-1 [_]
