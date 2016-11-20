@@ -1,5 +1,6 @@
 (ns record-base.core
   (:require [record-base.utils :as u]
+            [shuriken.core :refer [fully-qualify]]
             [clojure.set :as set]))
 
 (def ^:private parse-impls
@@ -43,7 +44,7 @@
 (defn- build-base-impls [impls]
   (-> impls
       (->> (map (fn [[class-or-proto-or-iface method-sources]]
-                  [(u/fully-qualify class-or-proto-or-iface)
+                  [(fully-qualify class-or-proto-or-iface)
                    (->> method-sources
                         (map (juxt base-method-signature
                                    (fn [x] `(~x))))
@@ -84,7 +85,7 @@
   [name fields & specs]
   (let [proto-name (-> (str name "P") symbol)
         _ (eval `(defprotocol ~proto-name)) ;; tag protocol
-        proto-name (u/fully-qualify proto-name)
+        proto-name (fully-qualify proto-name)
         fields-data (parse-fields fields)
         impls (parse-impls specs)
         proxies (map (fn [[class-or-proto-or-iface methods]]
@@ -109,7 +110,7 @@
 
 
 
-(defn merge-bases 
+(defn merge-bases
   "Fusions two or more bases to create a new one where fields and specs
   are respectively merged in the style of clojure.core/merge"
   [a & [b & more]]

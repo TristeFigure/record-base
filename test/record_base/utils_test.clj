@@ -1,22 +1,6 @@
 (ns record-base.utils-test
   (:require [clojure.test :refer :all]
-            [record-base.utils :refer :all]
-            [record-base.virtual-test-namespace :refer [a-var] :as virtual])
-  (:import [record_base.virtual_test_namespace AType]))
-
-(defn sym+ [sym]
-  (str *ns* "/" sym))
-
-(deftest test-fully-qualify
-  (let [local-var :local]
-    (binding [*ns* (find-ns 'record-base.utils-test)]
-      (are [sym expected] (= (fully-qualify *ns* sym) expected)
-           'Object              'java.lang.Object
-           'fully-qualify       'record-base.utils/fully-qualify
-           'local-var           'local-var
-           'a-var               'record-base.virtual-test-namespace/a-var
-           'virtual/another-var 'record-base.virtual-test-namespace/another-var
-           'AType               'record_base.virtual_test_namespace.AType))))
+            [record-base.utils :refer :all]))
 
 (defmacro assert-flatten-roundtrip [m]
   `(let [m# ~m]
