@@ -1,4 +1,4 @@
-(defproject record-base "0.1.0"
+(defproject record-base "0.1.1"
   :description "Traits for clojure types and records"
   :url "https://github.com/TristeFigure/record-base"
   :license {:name "Eclipse Public License"

@@ -1,7 +1,7 @@
 # record-base
 
 ```clojure
-[record-base "0.1.0"]
+[record-base "0.1.1"]
 ```
 
 A Clojure library that brings traits support for types and records.
