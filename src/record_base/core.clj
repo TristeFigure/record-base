@@ -143,10 +143,10 @@
                  (concat [class-or-proto-or-iface]
                          (apply concat (vals m)))))))
 
-(defn- code-from-base [base* fields specs produce-code]
+(defn- code-from-base [base+ fields specs produce-code]
   (let [parents (map #(deref (resolve %))
-                     (if (coll? base*)
-                       base* [base*]))
+                     (if (coll? base+)
+                       base+ [base+]))
         z {:fields (parse-fields fields)
            :impls  (-> specs parse-impls build-base-impls)}
         merged (apply merge-bases (concat parents [z]))
@@ -155,28 +155,21 @@
         code (produce-code synth-fields synth-specs)]
     code))
 
-(defmacro defrecord-from-base
-  "Expands to a defrecord statement by merging the base(s) denoted by base*
-  with the base represetended by specs."
-  [aname base* fields & specs]
-  (code-from-base base* fields specs
-    (fn [fields specs]
-      `(defrecord ~aname ~fields
-         ~@specs))))
-
-(defmacro deftype-from-base
-  "Same thing as defrecord-from-base but for types"
-  [aname base* fields & specs]
-  (code-from-base base* fields specs
-    (fn [fields specs]
-      `(deftype ~aname ~fields
-         ~@specs))))
-
-(defmacro extend-type-from-base
-  "Same thin as defrecord-from-base but via extend-type"
-  [aname base* & specs]
-  (code-from-base base* [] specs
+(defmacro extend-with-base
+  "Same thing as defrecord-from-base but via extend-type"
+  [aname base+ & specs]
+  (code-from-base base+ [] specs
     (fn [_fields specs]
       `(extend-type ~aname
          ~@specs))))
 
+(defmacro defbased [mode aname base+ fields & specs]
+  {:pre [(#{:record :type} mode)]}
+  (let [definer (case mode
+                  :record 'defrecord
+                  :type   'deftype)]
+    (code-from-base
+      base+ fields specs
+      (fn [fields specs]
+        `(~definer ~aname ~fields
+           ~@specs)))))

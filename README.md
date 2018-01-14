@@ -1,12 +1,17 @@
 # record-base
 
-```clojure
-[record-base "0.1.1"]
-```
-
 A Clojure library that brings traits support for types and records.
 
-In this library a trait is called a *base* (sorry) and aims to complement Clojure's approach of objects by following the same philosophy protocols stick to : a record is still free of any inheritance chain and merely satisfies protocols or *grounds* bases. While protocols decouple interfaces from implementations, bases decouple implementations from interfaces – in the middle, records stand as receptacles for compositions of interfaces on the one hand and for compositions of implementations on the other hand.
+```clojure
+[record-base "0.2.0"]
+```
+
+In this library a trait is called a *base* (sorry) and aims to complement Clojure's approach of objects by following the same philosophy protocols stick to: a record is still free of any inheritance chain and merely satisfies protocols and **grounds** bases.
+
+While protocols decouple interfaces from records, bases decouple records from implementations – in the middle, records stand as receptacles for compositions of interfaces on the one hand and for compositions of implementations on the other hand.
+
+However symmetric this might seem, there is no one-to-one requirement between
+protocols and bases: a protocol implementation can be scattered through multiple bases and a base can implement multiple protocols, even partially.
 
 A base can be defined with
 
@@ -27,15 +32,20 @@ A base can be defined with
 
 and can be grounded into a record with
 ```clojure
-(defrecord-from-base MyRecord MyBase [])
+(defbased :record MyRecord MyBase [field-2]
+  MyProtocol
+  (my-method-1 [_]
+    (println "overloaded")))
 ```
 
-Like protocols, composition of bases happens in records. It is thus possible to ground multiple bases into the same record by specifying a vector of bases rather than a single base.
+To implement multiple bases:
 ```clojure
-(defrecord-from-base MyRecord [MyBase1 MyBase2] [])
+(defbased :record MyRecord [MyBase1 MyBase2] [my-field]
+  MyProto
+  (my-method [_this) 123)
 ```
 
-Bases define record fields as well as protocol methods and these definitions can be partial (some fields or methods can be left off and be defined in other bases or in the final record). Bases are merged from left to right, like maps with `clojure.core/merge`, starting from the first base in the definition up to the fields and methods defined in the record. It is thus possible, to override fields and methods defined in bases in the record definition itself. Both methods and fields support type hints. Fields are identified by their symbol across bases. Interfaces are supported and type hints can be overriden (don't ask me why, I'm too crazy to know).
+Bases are merged from left to right, like maps with `clojure.core/merge` and methods as well as fields can be overwritten. Both methods and fields support type hints. Interfaces are supported and type hints can be overriden.
 
 ```clojure
 (definterface MyInterface
@@ -45,25 +55,28 @@ Bases define record fields as well as protocol methods and these definitions can
   (^int my-method [this]
     123))
 
-(derecord MyRecord MyBase [^int field]
+(defbased :record MyRecord MyBase [^int field]
   (^int my-method [this]
     456))
 
 (my-method (->MyRecord)) ;; ==> 456
 ```
 
-## Bonus
+### deftype & extend-type
 
 It also possible to write bases for types via
-- `deftype-from-base`
-- and `extend-type-from-base`
+```clojure
+(defbased :type ...)
+```
 
-## TODO
+and to extend type/records using bases with
+```clojure
+(extend-with-base Thing Base)
+;; or
+(extend-with-base Thing [Base1, Base2, ...])
+```
+
+### TODO
 
 - write `(grounds? base x)` in order to mirror `(satisfies? protocol x)`
-- do something about type hints overloading
-
-## Caution
-
-Very alpha. Function names and arguments **will** change.
 

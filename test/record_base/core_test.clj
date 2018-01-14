@@ -33,21 +33,21 @@
 
 (defbase BMin [])
 
-(defrecord-from-base RMin BMin [])
+(defbased :record RMin BMin [])
 (defbase BFieldsMin [a b c])
-(defrecord-from-base RFieldsMin BFieldsMin [])
+(defbased :record RFieldsMin BFieldsMin [])
 (defbase B1FieldsInherit [])
 (defbase B2FieldsInherit [a])
-(defrecord-from-base RFieldsInherit [B1FieldsInherit B2FieldsInherit] [])
+(defbased :record RFieldsInherit [B1FieldsInherit B2FieldsInherit] [])
 (defbase B1FieldsMerge [a b])
 (defbase B2FieldsMerge [a c])
-(defrecord-from-base R1FieldsMerge [B1FieldsMerge B2FieldsMerge] [])
+(defbased :record R1FieldsMerge [B1FieldsMerge B2FieldsMerge] [])
 (defbase B3FieldsMerge [^long a b])
 (defbase B4FieldsMerge [a #^String c])
-(defrecord-from-base R2FieldsMerge [B3FieldsMerge B4FieldsMerge] [])
+(defbased :record R2FieldsMerge [B3FieldsMerge B4FieldsMerge] [])
 (defbase B1FieldsHints [^long a b])
 (defbase B2FieldsHints [a #^String b])
-(defrecord-from-base RFieldsHints [B1FieldsHints B2FieldsHints] [])
+(defbased :record RFieldsHints [B1FieldsHints B2FieldsHints] [])
 
 (defprotocol P1
   (m1 [_])
@@ -55,16 +55,16 @@
 
 (defbase BImplsMin []
   P1 (m1 [_] :m1))
-(defrecord-from-base RImplsMin BImplsMin [])
+(defbased :record RImplsMin BImplsMin [])
 (defbase B1ImplsInherit []
   P1 (m1 [_] :from-b1))
 (defbase B2ImplsInherit []
   P1 (m1 [_] :from-b2))   
-(defrecord-from-base R1ImplsInherit [B1ImplsInherit B2ImplsInherit] [])
-(defrecord-from-base R2ImplsInherit [B2ImplsInherit B1ImplsInherit] [])
-(defrecord-from-base R3ImplsInherit [B1ImplsInherit] []
+(defbased :record R1ImplsInherit [B1ImplsInherit B2ImplsInherit] [])
+(defbased :record R2ImplsInherit [B2ImplsInherit B1ImplsInherit] [])
+(defbased :record R3ImplsInherit [B1ImplsInherit] []
   P1 (m1 [_] :from-record))
-(defrecord-from-base R4ImplsInherit B1ImplsInherit []
+(defbased :record R4ImplsInherit B1ImplsInherit []
   P1 (m1 [_] :from-single-base-record))
 
 (definterface I
@@ -74,24 +74,24 @@
   I (^int m [_ #^String x] 1))
 (defbase B2ImplsHints []
   I (^int m [_ #^String x] 2))
-(defrecord-from-base R1ImplsHints [B1ImplsHints B2ImplsHints] []
+(defbased :record R1ImplsHints [B1ImplsHints B2ImplsHints] []
   I (^int m [_ #^String x] 3))
 
 (defbase BDeftype []
   P1 (m1 [_] :from-base))
-(deftype-from-base TDeftype BDeftype []
+(defbased :type TDeftype BDeftype []
   P1 (m1 [_] :from-type))
 
 (defbase BExtendType []
   P1 (m1 [_] :from-base))
 (defrecord RExtendType [])
-(extend-type-from-base RExtendType BExtendType)
+(extend-with-base RExtendType BExtendType)
 
 
 (deftest test-minimal
   (testing "asserting presence of tag protocol"
     (assert-base BMin :impls #{'{record-base.core-test/BMinP {}}}))
-  (testing "testing defrecord-from-base"
+  (testing "testing defbased :record"
     (is (->RMin))))
 
 (deftest test-fields-min
@@ -185,15 +185,13 @@
                         (.m r1 :wrong)))))
     
     
-(deftest test-deftype-from-base
-  (testing "deftype-from-base"
+(deftest test-defbased :type
+  (testing "defbased :type"
     (is (= (.m1 (TDeftype.))
            :from-type))))
 
 
-(deftest test-extend-type-from-base
-  (testing "deftype-from-base"
+(deftest test-extend-with-base
+  (testing "defbased :type"
     (is (= (m1 (->RExtendType))
            :from-base))))
-
-(run-tests)
