@@ -45,7 +45,7 @@ To implement multiple bases:
   (my-method [_this) 123)
 ```
 
-Bases are merged from left to right, like maps with `clojure.core/merge` and methods as well as fields can be overwritten. Both methods and fields support type hints. Interfaces are supported and type hints can be overriden.
+Bases define record fields as well as protocol methods and these definitions can be partial (some fields or methods can be left off and be defined in other bases or in the consuming record). Bases are merged from left to right, like maps with `clojure.core/merge`, including fields and methods defined in the consuming record. It is thus possible, to override fields and methods defined in bases in the record definition itself. Both methods and fields support type hints. Fields are identified by their symbol across bases. Interfaces are supported and type hints can be overriden.
 
 ```clojure
 (definterface MyInterface
